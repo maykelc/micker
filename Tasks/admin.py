@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Personal, Califications,Chamba,Category,Document,Skill,Task
+
+# Register your models here.
+from .models import Personal, Califications,Chamba,Category,Document,Skill,Task, Location
 # Register your models here.
 
 admin.site.register(Personal)
@@ -9,3 +11,4 @@ admin.site.register(Category)
 admin.site.register(Document)
 admin.site.register(Skill)
 admin.site.register(Task)
+admin.site.register(Location)

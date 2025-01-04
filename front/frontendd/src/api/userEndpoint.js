@@ -7,7 +7,7 @@ export const getUsers = () => apiRequest('get', 'personal/');
 export const getUserById = (id) => apiRequest('get', `personal/${id}/`);
 
 // Crear un nuevo usuario
-export const newUser = (data) => apiRequest('post', 'personal/', data);
+export const newUser = (data) => apiRequest('post', 'personal/', data); // Llama a apiRequest directamente
 
 // Actualizar un usuario
 export const updateUser = (id, data) => apiRequest('patch', `personal/${id}/`, data);

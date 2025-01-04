@@ -20,4 +20,4 @@ const ButtonBack = () => {
   );
 };
 
-export default ButtonBack;
+export { ButtonBack };;

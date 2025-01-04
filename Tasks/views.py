@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import Personal, Chamba, Document, Category, Skill, Task, Califications
-from .serializer import PersonalSerializer, ChambaSerializer, DocumentSerializer, CategorySerializer, SkillSerializer, TaskSerializer, CalificationsSerializer
+from .serializers import PersonalSerializer, ChambaSerializer, DocumentSerializer, CategorySerializer, SkillSerializer, TaskSerializer, CalificationsSerializer
 # ViewSets para cada modelo
 
 class PersonalViewSet(viewsets.ModelViewSet):

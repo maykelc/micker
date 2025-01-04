@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'tareas',
+    'Tasks',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +131,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
+SECRET_KEY = 'secretkey'
+
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    "http://localhost:5173",
+
 ]

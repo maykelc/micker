@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Grid } from '@mui/material';
+import React, { useState } from "react";
+import { Box, TextField, Button, Typography, Grid, Snackbar, Alert, MenuItem } from "@mui/material";
+import { newUser } from "../api/userEndPoint"; // Importar la función newUser
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    rut: '',
-    añoNacimiento: '',
-    correo: '',
-    contraseña: ''
+    tipo_empleado: "",
+    nombre: "",
+    apellidos: "",
+    correo: "",
+    telefono: "",
+    direccion: "",
+    genero: "",
+    password: "",
   });
+
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [snackBarSeverity, setSnackBarSeverity] = useState("success");
 
   // Manejador de cambios para actualizar el estado de los campos
   const handleChange = (e) => {
@@ -17,20 +24,92 @@ const RegistrationForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Validación del formulario
+  const validateForm = () => {
+    const { tipo_empleado, nombre, apellidos, correo, telefono, direccion, genero, password } = formData;
+    if (!tipo_empleado || !nombre || !apellidos || !correo || !telefono || !direccion || !genero || !password) {
+      setSnackBarSeverity("error");
+      setSnackBarMessage("Todos los campos son obligatorios.");
+      setSnackBarOpen(true);
+      return false;
+    }
+    return true;
+  };
+
   // Manejador del envío del formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Formulario enviado:', formData);
-    // Aquí puedes agregar la lógica para enviar los datos a tu backend o API
+
+    if (!validateForm()) return;
+
+    try {
+      const payload = {
+        tipo_empleado: { tipo_persona: formData.tipo_empleado },
+        nombre: formData.nombre,
+        apellidos: formData.apellidos,
+        correo: formData.correo,
+        telefono: formData.telefono,
+        direccion: formData.direccion,
+        genero: formData.genero,
+        password: formData.password,
+      };
+
+      const response = await newUser(payload);
+
+      console.log("Respuesta del servidor:", response);
+
+      if (response.status === 201) {
+        setSnackBarMessage("Registro exitoso");
+        setSnackBarSeverity("success");
+
+        // Reiniciar el formulario
+        setFormData({
+          tipo_empleado: "",
+          nombre: "",
+          apellidos: "",
+          correo: "",
+          telefono: "",
+          direccion: "",
+          genero: "",
+          password: "",
+        });
+      } else {
+        setSnackBarMessage("Hubo un error al registrar el usuario");
+        setSnackBarSeverity("error");
+      }
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      setSnackBarMessage("Error al conectar con el servidor");
+      setSnackBarSeverity("error");
+    }
+
+    setSnackBarOpen(true);
   };
 
   return (
-    <Box sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
-      <Typography variant="h5" gutterBottom>Formulario de Registro</Typography>
-      
+    <Box sx={{ padding: 3, maxWidth: 600, margin: "auto" }}>
+      <Typography variant="h5" gutterBottom>
+        Formulario de Registro
+      </Typography>
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          {/* Nombre */}
+          <Grid item xs={12}>
+            <TextField
+              label="Tipo de Empleado"
+              variant="outlined"
+              select
+              fullWidth
+              name="tipo_empleado"
+              value={formData.tipo_empleado}
+              onChange={handleChange}
+              required
+            >
+              <MenuItem value="empleado">Empleado</MenuItem>
+              <MenuItem value="empleador">Empleador</MenuItem>
+            </TextField>
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               label="Nombre"
@@ -43,48 +122,18 @@ const RegistrationForm = () => {
             />
           </Grid>
 
-          {/* Apellido */}
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Apellido"
+              label="Apellidos"
               variant="outlined"
               fullWidth
-              name="apellido"
-              value={formData.apellido}
+              name="apellidos"
+              value={formData.apellidos}
               onChange={handleChange}
               required
             />
           </Grid>
 
-          {/* RUT */}
-          <Grid item xs={12}>
-            <TextField
-              label="RUT"
-              variant="outlined"
-              fullWidth
-              name="rut"
-              value={formData.rut}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          {/* Año de Nacimiento */}
-          <Grid item xs={12}>
-            <TextField
-              label="Año de Nacimiento"
-              variant="outlined"
-              fullWidth
-              name="añoNacimiento"
-              value={formData.añoNacimiento}
-              onChange={handleChange}
-              required
-              type="number"
-              inputProps={{ min: 1900, max: new Date().getFullYear() }}
-            />
-          </Grid>
-
-          {/* Correo */}
           <Grid item xs={12}>
             <TextField
               label="Correo Electrónico"
@@ -98,21 +147,61 @@ const RegistrationForm = () => {
             />
           </Grid>
 
-          {/* Contraseña */}
+          <Grid item xs={12}>
+            <TextField
+              label="Teléfono"
+              variant="outlined"
+              fullWidth
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              required
+              type="tel"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Dirección"
+              variant="outlined"
+              fullWidth
+              name="direccion"
+              value={formData.direccion}
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Género"
+              variant="outlined"
+              select
+              fullWidth
+              name="genero"
+              value={formData.genero}
+              onChange={handleChange}
+              required
+            >
+              <MenuItem value="Masculino">Masculino</MenuItem>
+              <MenuItem value="Femenino">Femenino</MenuItem>
+              <MenuItem value="Otro">Otro</MenuItem>
+            </TextField>
+          </Grid>
+
           <Grid item xs={12}>
             <TextField
               label="Contraseña"
               variant="outlined"
               fullWidth
-              name="contraseña"
-              value={formData.contraseña}
+              name="password"
+              value={formData.password}
               onChange={handleChange}
               required
               type="password"
             />
           </Grid>
 
-          {/* Botón de Enviar */}
           <Grid item xs={12}>
             <Button variant="contained" color="primary" fullWidth type="submit">
               Registrarse
@@ -120,6 +209,16 @@ const RegistrationForm = () => {
           </Grid>
         </Grid>
       </form>
+
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarOpen(false)}
+      >
+        <Alert onClose={() => setSnackBarOpen(false)} severity={snackBarSeverity} sx={{ width: "100%" }}>
+          {snackBarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
