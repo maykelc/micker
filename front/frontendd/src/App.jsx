@@ -4,6 +4,7 @@ import HomePages from './pages/homePrincipal.jsx';
 import RegistrationPage from "./pages/regis.jsx";
 import Employer from './pages/Employer.jsx';
 import StaffWorkerbee from './pages/StaffWorkerbee.jsx';
+import CardUser from "./components/card.jsx";
 
 const App = ()=> {
   return(
@@ -12,7 +13,8 @@ const App = ()=> {
       <Route path="/" element={<HomePages />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/empleyer" element={<Employer />} />
-      <Route path="/registro" element={<StaffWorkerbee/>}/>
+      <Route path="/workerbee" element={<StaffWorkerbee/>}/>
+      <Route path="/card" element={<CardUser/>}/>
       </Routes>
     </Router>
   );

@@ -1,53 +1,71 @@
-import React, { useState, useEffect } from "react";
-import { getUsers } from "../api/userEndPoint";
-import RegistrationForm from '../components/formRegister';
+import React, { useState, useEffect } from 'react';
+import { Drawer, List, ListItem, ListItemText, Box, Typography, Backdrop, CircularProgress } from '@mui/material';
+import { Home, Assignment, CalendarToday } from '@mui/icons-material';
 
 const StaffWorkerbee = () => {
-  const [users, setUsers] = useState([]); // Estado para los usuarios
-  const [loading, setLoading] = useState(true); // Estado para la carga
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Función para obtener usuarios
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await getUsers();
-        console.log("Usuarios obtenidos:", response);
-        setUsers(response.data || []); // Extrae los usuarios de la clave `data`
-      } catch (error) {
-        console.error("Error al obtener los usuarios:", error);
-        setUsers([]); // Maneja el caso de error con un array vacío
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+    // Simulación de carga
+    setTimeout(() => setLoading(false), 1500); // 1.5 segundos de carga
   }, []);
 
-  if (loading) {
-    return <p>Cargando usuarios...</p>;
-  }
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
 
   return (
-    <div>
-        <div>
-            <RegistrationForm /> {/* Componente del formulario */}
-        </div>
-      <h1>Gestión de Personal</h1>
-      <div>
-        <h2>Lista de Usuarios</h2>
-        {users.length > 0 ? (
-          users.map((user) => (
-            <div key={user.id}>
-              <h3>{user.nombre} {user.apellidos}</h3>
-              <p>Correo: {user.correo}</p>
-            </div>
-          ))
-        ) : (
-          <p>No hay usuarios disponibles.</p>
-        )}
-      </div>
-    </div>
+    <Box sx={{ display: 'flex' }}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        sx={{
+          width: open ? 240 : 60,
+          transition: 'width 0.3s ease',
+          '& .MuiDrawer-paper': {
+            width: open ? 240 : 60,
+            transition: 'width 0.3s ease',
+            backgroundColor: '#333',
+            color: 'white',
+          },
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
+          <img
+            src="https://via.placeholder.com/40"
+            alt="Logo"
+            style={{
+              width: open ? '40px' : '30px',
+              height: open ? '40px' : '30px',
+              transition: 'width 0.3s ease, height 0.3s ease',
+            }}
+          />
+        </Box>
+
+        <List>
+          <ListItem button onClick={handleDrawerToggle}>
+            <Home />
+            {open && <ListItemText primary="Home" />}
+          </ListItem>
+          <ListItem button onClick={handleDrawerToggle}>
+            <Assignment />
+            {open && <ListItemText primary="Detalles Tarea" />}
+          </ListItem>
+          <ListItem button onClick={handleDrawerToggle}>
+            <CalendarToday />
+            {open && <ListItemText primary="Calendario" />}
+          </ListItem>
+        </List>
+      </Drawer>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </Box>
   );
 };
 

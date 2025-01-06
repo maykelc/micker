@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Importa el hook
 
 const Login = ({ open, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Crea la instancia de navigate
 
   const handleSubmit = () => {
     // Lógica para el envío del formulario de inicio de sesión
     console.log('Email:', email);
     console.log('Password:', password);
-    onClose(); // Cerrar el modal después de enviar el formulario
+
+    if (email && password) {
+      onClose(); // Cierra el modal
+      navigate('/workerbee'); // Redirige a la ruta "/workerbee"
+    } else {
+      alert('Por favor, completa ambos campos.');
+    }
   };
 
   return (
